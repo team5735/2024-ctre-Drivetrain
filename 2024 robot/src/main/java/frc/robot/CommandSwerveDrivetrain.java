@@ -32,7 +32,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    private SwerveRequest.RobotCentric m_autoDrive; // DO NOT DRIVE WITH THIS OTHERWISE... before I refactor!
+    private SwerveRequest.RobotCentric m_robotCentric = new SwerveRequest.RobotCentric()
+            .withDeadband(.1 * 6)
+            .withRotationalDeadband(1.5 * Math.PI);
+    private SwerveRequest.FieldCentric m_fieldCentric = new SwerveRequest.FieldCentric()
+            .withDeadband(.1 * 6)
+            .withRotationalDeadband(1.5 * Math.PI);
+    private Supplier<Boolean> isFieldCentric;
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
@@ -49,6 +55,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        setupAuto();
+    }
+
+    public void drive(double vx, double vy, double omega) {
+        if (isFieldCentric.get()) {
+            setControl(m_fieldCentric.withVelocityX(vx)
+                    .withVelocityY(vy)
+                    .withRotationalRate(omega)
+                    .withDeadband(.1));
+            return;
+        }
+
+        setControl(m_fieldCentric.withVelocityX(vx)
+                .withVelocityY(vy)
+                .withRotationalRate(omega)
+                .withDeadband(.1));
+
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -70,10 +94,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    private Pose2d getEstimatedPosition() {
+        m_stateLock.readLock().lock();
+        var pose = m_odometry.getEstimatedPosition();
+        m_stateLock.readLock().unlock();
+
+        return pose;
+    }
+
     // helper function because the resetPose passed to Pathplanner is only given a
     // pose
     private void setPose(Pose2d pose) {
+        if (!odometryIsValid())
+            return;
+        m_stateLock.writeLock().lock();
         m_odometry.resetPosition(m_pigeon2.getRotation2d(), m_modulePositions, pose);
+        m_stateLock.writeLock().unlock();
     }
 
     // helper function to put all speed values together into an array
@@ -93,7 +129,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         var targetStates = m_kinematics.toSwerveModuleStates(discrete);
 
         applyRequest(() -> {
-            return m_autoDrive
+            return m_robotCentric
                     .withVelocityX(discrete.vxMetersPerSecond)
                     .withVelocityY(discrete.vyMetersPerSecond)
                     .withRotationalRate(discrete.omegaRadiansPerSecond);
@@ -108,26 +144,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         var drivePid = new PIDConstants(driveCfg.kP, driveCfg.kI, driveCfg.kD);
         var turnPid = new PIDConstants(turnCfg.kP, turnCfg.kI, turnCfg.kD);
 
-        double SQRT_2 = 1.4142135623730951455;
         return new HolonomicPathFollowerConfig(drivePid,
                 turnPid,
                 4.5, // max speed
-                SQRT_2 * 12.25, // radius (wtf)
+                Math.sqrt(10.25 * 10.25 + 12.5 * 12.5), // radius (wtf)
                 new ReplanningConfig());
     }
 
     private void setupAuto() {
         AutoBuilder.configureHolonomic(
-            m_odometry::getEstimatedPosition,
-            this::setPose,
-            this::getChassisSpeeds,
-            this::autoDriveRobotRelative,
-            getConfig(),
-            () -> {
-                return (DriverStation.getAlliance().isPresent() && 
-                           DriverStation.getAlliance().get() == DriverStation.Alliance.Red);
-                        },
-            (Subsystem) this
-        );
+                this::getEstimatedPosition,
+                this::setPose,
+                this::getChassisSpeeds,
+                this::autoDriveRobotRelative,
+                getConfig(),
+                () -> {
+                    return (DriverStation.getAlliance().isPresent() &&
+                            DriverStation.getAlliance().get() == DriverStation.Alliance.Red);
+                },
+                this);
     }
 }

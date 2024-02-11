@@ -10,6 +10,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import edu.wpi.first.math.util.Units;
 import frc.robot.CommandSwerveDrivetrain;
 
+// Drivetrain dimension wheel to wheel: 20.5 by 25
+
 public class TunerConstants {
     // Both sets of gains need to be tuned to your individual robot.
 
@@ -92,8 +94,8 @@ public class TunerConstants {
     private static final int kFrontLeftEncoderId = 10;
     private static final double kFrontLeftEncoderOffset = -0.155517578125;
 
-    private static final double kFrontLeftXPosInches = 12.25;
-    private static final double kFrontLeftYPosInches = 12.25;
+    private static final double kFrontLeftXPosInches = 10.25;
+    private static final double kFrontLeftYPosInches = 12.5;
 
     // Front Right
     private static final int kFrontRightDriveMotorId = 6;
@@ -101,8 +103,8 @@ public class TunerConstants {
     private static final int kFrontRightEncoderId = 11;
     private static final double kFrontRightEncoderOffset = 0.038330078125;
 
-    private static final double kFrontRightXPosInches = 12.25;
-    private static final double kFrontRightYPosInches = -12.25;
+    private static final double kFrontRightXPosInches = 10.25;
+    private static final double kFrontRightYPosInches = -12.5;
 
     // Back Left
     private static final int kBackLeftDriveMotorId = 2;
@@ -110,8 +112,8 @@ public class TunerConstants {
     private static final int kBackLeftEncoderId = 9;
     private static final double kBackLeftEncoderOffset = -0.492431640625;
 
-    private static final double kBackLeftXPosInches = -12.25;
-    private static final double kBackLeftYPosInches = 12.25;
+    private static final double kBackLeftXPosInches = -10.25;
+    private static final double kBackLeftYPosInches = 12.5;
 
     // Back Right
     private static final int kBackRightDriveMotorId = 8;
@@ -119,8 +121,8 @@ public class TunerConstants {
     private static final int kBackRightEncoderId = 12;
     private static final double kBackRightEncoderOffset = 0.09765625;
 
-    private static final double kBackRightXPosInches = -12.25;
-    private static final double kBackRightYPosInches = -12.25;
+    private static final double kBackRightXPosInches = -10.25;
+    private static final double kBackRightYPosInches = -12.5;
 
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
