@@ -38,29 +38,33 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private SwerveRequest.FieldCentric m_fieldCentric = new SwerveRequest.FieldCentric()
             .withDeadband(.1 * 6)
             .withRotationalDeadband(1.5 * Math.PI);
-    private Supplier<Boolean> isFieldCentric;
+    private Supplier<Boolean> m_isFieldCentric;
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
-            SwerveModuleConstants... modules) {
+            Supplier<Boolean> fieldCentric, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         if (Utils.isSimulation()) {
             startSimThread();
         }
 
+        m_isFieldCentric = fieldCentric;
+
         setupAuto();
     }
 
-    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, Supplier<Boolean> fieldCentric, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
         }
 
+        m_isFieldCentric = fieldCentric;
+
         setupAuto();
     }
 
     public void drive(double vx, double vy, double omega) {
-        if (isFieldCentric.get()) {
+        if (m_isFieldCentric.get()) {
             setControl(m_fieldCentric.withVelocityX(vx)
                     .withVelocityY(vy)
                     .withRotationalRate(omega)
