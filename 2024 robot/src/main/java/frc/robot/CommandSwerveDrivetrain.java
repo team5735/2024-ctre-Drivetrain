@@ -38,6 +38,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private SwerveRequest.FieldCentric m_fieldCentric = new SwerveRequest.FieldCentric()
             .withDeadband(.1 * 6)
             .withRotationalDeadband(1.5 * Math.PI);
+    private SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
     private Supplier<Boolean> m_isFieldCentric;
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
@@ -72,11 +73,15 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             return;
         }
 
-        setControl(m_fieldCentric.withVelocityX(vx)
+        setControl(m_robotCentric.withVelocityX(vx)
                 .withVelocityY(vy)
                 .withRotationalRate(omega)
                 .withDeadband(.1));
 
+    }
+
+    public void brake() {
+        setControl(m_brake);
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {

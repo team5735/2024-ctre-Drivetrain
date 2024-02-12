@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.generated.TunerConstants;
 
@@ -49,7 +50,7 @@ public class RobotContainer {
                            )
         );
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    joystick.a().whileTrue(new BrakeCommand(drivetrain));
     joystick.b().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
