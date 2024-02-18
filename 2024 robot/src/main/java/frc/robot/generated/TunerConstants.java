@@ -20,12 +20,12 @@ public class TunerConstants {
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     public static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(60).withKI(0).withKD(0.2)
+        .withKP(20).withKI(0).withKD(0.2)
         .withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     public static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(2).withKI(0).withKD(0)
+        .withKP(.5).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
     // The closed-loop output type to use for the steer motors;
@@ -95,7 +95,7 @@ public class TunerConstants {
     private static final int kFrontLeftEncoderId = 10;
     private static final double kFrontLeftEncoderOffset = -0.155517578125;
 
-    private static final double kFrontLeftXPosInches = 10.25;
+    private static final double kFrontLeftXPosInches = 9.75;
     private static final double kFrontLeftYPosInches = 12.5;
 
     // Front Right
@@ -104,7 +104,7 @@ public class TunerConstants {
     private static final int kFrontRightEncoderId = 11;
     private static final double kFrontRightEncoderOffset = 0.038330078125;
 
-    private static final double kFrontRightXPosInches = 10.25;
+    private static final double kFrontRightXPosInches = 9.75;
     private static final double kFrontRightYPosInches = -12.5;
 
     // Back Left
@@ -113,7 +113,7 @@ public class TunerConstants {
     private static final int kBackLeftEncoderId = 9;
     private static final double kBackLeftEncoderOffset = -0.492431640625;
 
-    private static final double kBackLeftXPosInches = -10.25;
+    private static final double kBackLeftXPosInches = -9.75;
     private static final double kBackLeftYPosInches = 12.5;
 
     // Back Right
@@ -122,7 +122,7 @@ public class TunerConstants {
     private static final int kBackRightEncoderId = 12;
     private static final double kBackRightEncoderOffset = 0.09765625;
 
-    private static final double kBackRightXPosInches = -10.25;
+    private static final double kBackRightXPosInches = -9.75;
     private static final double kBackRightYPosInches = -12.5;
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(

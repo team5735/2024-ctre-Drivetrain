@@ -9,10 +9,14 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,13 +25,16 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.generated.TunerConstants;
 
+
 public class RobotContainer {
-    private double MaxSpeed = .4; // 6 meters per second desired top speed
+    private double MaxSpeed = .1; // 6 meters per second desired top speed
     private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
     private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+
+    private final SendableChooser<Command> m_autoSmartDashboard = AutoBuilder.buildAutoChooser();
 
     // This is a sin, ignore this
     private static boolean isFieldCentric = true;
@@ -39,7 +46,7 @@ public class RobotContainer {
                                                                      // driving in open loop
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    private final Telemetry logger = new Telemetry(.1);
 
     private void configureBindings() {
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -69,9 +76,12 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+
+        SmartDashboard.putData("Choose Auto", m_autoSmartDashboard);
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        var auto = m_autoSmartDashboard.getSelected();
+        return auto == null ? new BrakeCommand(drivetrain) : auto;
     }
 }
