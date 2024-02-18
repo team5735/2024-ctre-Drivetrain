@@ -133,7 +133,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     // Converts from ChassisSpeeds to a swerve request for Pathplanner
     private void autoDriveRobotRelative(ChassisSpeeds robotChassisSpeeds) {
-        var discrete = ChassisSpeeds.discretize(robotChassisSpeeds, 1.0 / 250.0); // TODO: is this the right frequency?
+        var discrete = ChassisSpeeds.discretize(robotChassisSpeeds, 1.0 / 20.0); // TODO: is this the right frequency?
 
         var targetStates = m_kinematics.toSwerveModuleStates(discrete);
 
@@ -156,7 +156,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return new HolonomicPathFollowerConfig(drivePid,
                 turnPid,
                 4.5, // max speed
-                Math.sqrt(10.25 * 10.25 + 12.5 * 12.5), // radius (wtf)
+                Math.sqrt(9.75 * 9.75 + 12.5 * 12.5), // radius (wtf)
                 new ReplanningConfig());
     }
 

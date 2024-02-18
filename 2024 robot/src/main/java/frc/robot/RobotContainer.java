@@ -20,9 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
+import frc.robot.commands.drivetrain.DriveStraightCommand;
 import frc.robot.generated.TunerConstants;
 
 
@@ -81,7 +84,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        var auto = m_autoSmartDashboard.getSelected();
-        return auto == null ? new BrakeCommand(drivetrain) : auto;
+        // var auto = m_autoSmartDashboard.getSelected();
+        // return auto == null ? new BrakeCommand(drivetrain) : auto;
+        return new ParallelDeadlineGroup(new WaitCommand(1), new DriveStraightCommand(drivetrain));
     }
 }
