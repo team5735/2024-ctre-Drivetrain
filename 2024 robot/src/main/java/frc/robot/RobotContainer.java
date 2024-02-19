@@ -53,24 +53,11 @@ public class RobotContainer {
     private void configureBindings() {
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 new DriveCommand(drivetrain,
-                        () -> {
-                            if (joystick.leftStick().getAsBoolean()) {
-                                return -joystick.getLeftY();
-                            }
-                            return -joystick.getLeftY() * 4;
-
-                        },
-                        () -> {
-                            if (joystick.leftStick().getAsBoolean()) {
-                                return -joystick.getLeftX();
-
-                            }
-                            return -joystick.getLeftX() * 4;
-
-                        },
+                        () -> joystick.getLeftX(),
+                        () -> joystick.getLeftY(),
                         () -> {
                             return (joystick.getRightTriggerAxis() - joystick.getLeftTriggerAxis()) * Math.PI;
-                        }));
+                        }, () -> joystick.leftStick().getAsBoolean()));
 
         joystick.a().whileTrue(new BrakeCommand(drivetrain));
         joystick.b().whileTrue(drivetrain
@@ -98,6 +85,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // var auto = m_autoSmartDashboard.getSelected();
         // return auto == null ? new BrakeCommand(drivetrain) : auto;
-        return new ParallelDeadlineGroup(new WaitCommand(5), new DriveStraightCommand(drivetrain));
+        return new ParallelDeadlineGroup(new WaitCommand(250), new DriveStraightCommand(drivetrain));
     }
 }

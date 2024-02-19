@@ -65,21 +65,21 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         setupAuto();
     }
 
-    public void drive(double vx, double vy, double omega) {
+    public void drive(double vx, double vy, double omega, double multiplier) {
         if (m_isFieldCentric.get()) {
-            setControl(m_fieldCentric.withVelocityX(vx)
-                    .withVelocityY(vy)
+            setControl(m_fieldCentric.withVelocityX(vx * multiplier)
+                    .withVelocityY(vy * multiplier)
                     .withRotationalRate(omega)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                    .withDeadband(2));
+                    .withDeadband(.2));
             return;
         }
 
-        setControl(m_robotCentric.withVelocityX(vx)
-                .withVelocityY(vy)
+        setControl(m_robotCentric.withVelocityX(vx * multiplier)
+                .withVelocityY(vy * multiplier)
                 .withRotationalRate(omega)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                .withDeadband(.15));
+                .withDeadband(.2));
     }
 
     public void driveClosedLoop(double vx, double vy, double omega) {

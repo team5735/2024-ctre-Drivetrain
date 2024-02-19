@@ -89,8 +89,6 @@ public class TunerConstants {
             .withCouplingGearRatio(kCoupleRatio)
             .withSteerMotorInverted(kSteerMotorReversed));
 
-            private static final double reductionOfSuffering = .05;
-
     // Front Left
     private static final int kFrontLeftDriveMotorId = 4;
     private static final int kFrontLeftSteerMotorId = 3;
@@ -112,7 +110,7 @@ public class TunerConstants {
     private static final int kFrontRightDriveMotorId = 6;
     private static final int kFrontRightSteerMotorId = 5;
     private static final int kFrontRightEncoderId = 11;
-    private static final double kFrontRightEncoderOffset = 0.041016;
+    private static final double kFrontRightEncoderOffset = 0.039795;
 
     private static final double kFrontRightXPosInches = 9.75;
     private static final double kFrontRightYPosInches = -12.5;
@@ -123,13 +121,13 @@ public class TunerConstants {
 
     public static final Slot0Configs kFrontRightDriveGains = new Slot0Configs()
             .withKP(.05).withKI(0).withKD(0)
-            .withKS(reductionOfSuffering).withKV(0).withKA(0);
+            .withKS(0).withKV(0).withKA(0);
 
     // Back Left
     private static final int kBackLeftDriveMotorId = 2;
     private static final int kBackLeftSteerMotorId = 1;
     private static final int kBackLeftEncoderId = 9;
-    private static final double kBackLeftEncoderOffset = -0.496338;
+    private static final double kBackLeftEncoderOffset = -0.496826;
 
     private static final double kBackLeftXPosInches = -10.25;
     private static final double kBackLeftYPosInches = 12.5;
@@ -146,7 +144,7 @@ public class TunerConstants {
     private static final int kBackRightDriveMotorId = 8;
     private static final int kBackRightSteerMotorId = 7;
     private static final int kBackRightEncoderId = 12;
-    private static final double kBackRightEncoderOffset = 0.031006;
+    private static final double kBackRightEncoderOffset = 0.046631;
 
     private static final double kBackRightXPosInches = -10.25;
     private static final double kBackRightYPosInches = -12.5;
@@ -157,7 +155,7 @@ public class TunerConstants {
 
     public static final Slot0Configs kBackRightDriveGains = new Slot0Configs()
             .withKP(.05).withKI(0).withKD(0)
-            .withKS(reductionOfSuffering).withKV(0).withKA(0);
+            .withKS(0).withKV(0).withKA(0);
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
             kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId,
