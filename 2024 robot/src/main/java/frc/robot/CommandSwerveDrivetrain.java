@@ -7,6 +7,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -69,15 +70,33 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             setControl(m_fieldCentric.withVelocityX(vx)
                     .withVelocityY(vy)
                     .withRotationalRate(omega)
-                    .withDeadband(.1));
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                    .withDeadband(2));
             return;
         }
 
         setControl(m_robotCentric.withVelocityX(vx)
                 .withVelocityY(vy)
                 .withRotationalRate(omega)
-                .withDeadband(.1));
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                .withDeadband(.15));
+    }
 
+    public void driveClosedLoop(double vx, double vy, double omega) {
+        if (m_isFieldCentric.get()) {
+        setControl(m_fieldCentric.withVelocityX(vx)
+                .withVelocityY(vy)
+                .withRotationalRate(omega)
+                .withDriveRequestType(DriveRequestType.Velocity)
+                .withDeadband(.1));
+        return;
+        }
+
+        setControl(m_robotCentric.withVelocityX(vx)
+            .withVelocityY(vy)
+            .withRotationalRate(omega)
+            .withDriveRequestType(DriveRequestType.Velocity)
+            .withDeadband(.1));
     }
 
     public void brake() {

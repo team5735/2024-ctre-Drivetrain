@@ -28,7 +28,6 @@ import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.drivetrain.DriveStraightCommand;
 import frc.robot.generated.TunerConstants;
 
-
 public class RobotContainer {
     private double MaxSpeed = .1; // 6 meters per second desired top speed
     private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
@@ -40,7 +39,7 @@ public class RobotContainer {
     private final SendableChooser<Command> m_autoSmartDashboard = AutoBuilder.buildAutoChooser();
 
     // This is a sin, ignore this
-    private static boolean isFieldCentric = true;
+    private static boolean isFieldCentric = false;
     public static Supplier<Boolean> getFieldCentric = () -> isFieldCentric;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -54,10 +53,23 @@ public class RobotContainer {
     private void configureBindings() {
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 new DriveCommand(drivetrain,
-                        () -> joystick.getLeftY(),
-                        () -> joystick.getLeftX(),
                         () -> {
-                            return joystick.getRightTriggerAxis() - joystick.getLeftTriggerAxis();
+                            if (joystick.leftStick().getAsBoolean()) {
+                                return -joystick.getLeftY();
+                            }
+                            return -joystick.getLeftY() * 4;
+
+                        },
+                        () -> {
+                            if (joystick.leftStick().getAsBoolean()) {
+                                return -joystick.getLeftX();
+
+                            }
+                            return -joystick.getLeftX() * 4;
+
+                        },
+                        () -> {
+                            return (joystick.getRightTriggerAxis() - joystick.getLeftTriggerAxis()) * Math.PI;
                         }));
 
         joystick.a().whileTrue(new BrakeCommand(drivetrain));
@@ -86,6 +98,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // var auto = m_autoSmartDashboard.getSelected();
         // return auto == null ? new BrakeCommand(drivetrain) : auto;
-        return new ParallelDeadlineGroup(new WaitCommand(1), new DriveStraightCommand(drivetrain));
+        return new ParallelDeadlineGroup(new WaitCommand(5), new DriveStraightCommand(drivetrain));
     }
 }

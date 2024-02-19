@@ -13,6 +13,6 @@ public class DriveStraightCommand extends Command {
     }
 
     public void execute() {
-        m_drivetrain.drive(1.00, 0, 0);
+        m_drivetrain.driveClosedLoop(4.00, 0, 0);
     }
 }
