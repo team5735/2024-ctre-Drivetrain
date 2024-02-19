@@ -3,7 +3,6 @@ package frc.robot.generated;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 
@@ -99,7 +98,7 @@ public class TunerConstants {
     private static final double kFrontLeftYPosInches = 12.5;
 
     public static final Slot0Configs kFrontLeftSteerGains = new Slot0Configs()
-            .withKP(50).withKI(0).withKD(0.2)
+            .withKP(75).withKI(0).withKD(0.2)
             .withKS(0).withKV(1.5).withKA(0);
 
     public static final Slot0Configs kFrontLeftDriveGains = new Slot0Configs()
@@ -116,11 +115,11 @@ public class TunerConstants {
     private static final double kFrontRightYPosInches = -12.5;
 
     public static final Slot0Configs kFrontRightSteerGains = new Slot0Configs()
-            .withKP(50).withKI(0).withKD(0.2)
+            .withKP(75).withKI(0).withKD(0.2)
             .withKS(0).withKV(1.5).withKA(0);
 
     public static final Slot0Configs kFrontRightDriveGains = new Slot0Configs()
-            .withKP(.05).withKI(0).withKD(0)
+            .withKP(.0527).withKI(0).withKD(0)
             .withKS(0).withKV(0).withKA(0);
 
     // Back Left
@@ -133,7 +132,7 @@ public class TunerConstants {
     private static final double kBackLeftYPosInches = 12.5;
 
     public static final Slot0Configs kBackLeftSteerGains = new Slot0Configs()
-            .withKP(50).withKI(0).withKD(0.2)
+            .withKP(75).withKI(0).withKD(0.2)
             .withKS(0).withKV(1.5).withKA(0);
 
     public static final Slot0Configs kBackLeftDriveGains = new Slot0Configs()
@@ -144,17 +143,17 @@ public class TunerConstants {
     private static final int kBackRightDriveMotorId = 8;
     private static final int kBackRightSteerMotorId = 7;
     private static final int kBackRightEncoderId = 12;
-    private static final double kBackRightEncoderOffset = 0.046631;
+    private static final double kBackRightEncoderOffset = 0.056631;
 
     private static final double kBackRightXPosInches = -10.25;
     private static final double kBackRightYPosInches = -12.5;
 
     public static final Slot0Configs kBackRightSteerGains = new Slot0Configs()
-            .withKP(50).withKI(0).withKD(0.2)
+            .withKP(75).withKI(0).withKD(0.2)
             .withKS(0).withKV(1.5).withKA(0);
 
     public static final Slot0Configs kBackRightDriveGains = new Slot0Configs()
-            .withKP(.05).withKI(0).withKD(0)
+            .withKP(.0527).withKI(0).withKD(0)
             .withKS(0).withKV(0).withKA(0);
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(

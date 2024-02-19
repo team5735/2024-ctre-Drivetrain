@@ -1,7 +1,5 @@
 package frc.robot.commands.drivetrain;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CommandSwerveDrivetrain;
 
@@ -13,6 +11,6 @@ public class DriveStraightCommand extends Command {
     }
 
     public void execute() {
-        m_drivetrain.driveClosedLoop(1.00, 0, 0);
+        m_drivetrain.driveClosedLoop(4.00, 0, 0);
     }
 }

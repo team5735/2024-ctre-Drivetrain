@@ -23,6 +23,6 @@ public class DriveCommand extends Command {
     }
 
     public void execute() {
-        m_drivetrain.drive(-m_stickY.get(), -m_stickX.get(), m_rotate.get(), m_accelerated.get() ? 4 : 1);
+        m_drivetrain.drive(-m_stickY.get(), -m_stickX.get(), m_rotate.get(), m_accelerated.get() ? 1 : 3);
     }
 }
