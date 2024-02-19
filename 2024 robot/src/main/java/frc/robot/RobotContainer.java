@@ -47,13 +47,22 @@ public class RobotContainer {
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final Telemetry logger = new Telemetry(.1);
 
+    private static final double deadband = 0.07;
+
+    private static double deadband(double input) {
+        if (Math.abs(input) <= deadband) {
+            return 0;
+        }
+        return input;
+    }
+
     private void configureBindings() {
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 new DriveCommand(drivetrain,
-                        () -> joystick.getLeftX(),
-                        () -> joystick.getLeftY(),
+                        () -> deadband(joystick.getLeftX()),
+                        () -> deadband(joystick.getLeftY()),
                         () -> {
-                            return (joystick.getRightTriggerAxis() - joystick.getLeftTriggerAxis()) * Math.PI;
+                            return deadband(joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * 5;
                         }, () -> joystick.leftStick().getAsBoolean()));
 
         joystick.a().whileTrue(new BrakeCommand(drivetrain));
@@ -80,8 +89,11 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // var auto = m_autoSmartDashboard.getSelected();
-        // return auto == null ? new BrakeCommand(drivetrain) : auto;
-        return new ParallelDeadlineGroup(new WaitCommand(250), new DriveStraightCommand(drivetrain));
+        var auto = m_autoSmartDashboard.getSelected();
+        if (auto == null) {
+            System.out.println("auto is null!");
+        }
+        return auto == null ? new BrakeCommand(drivetrain) : auto;
+        // return new ParallelDeadlineGroup(new WaitCommand(250), new DriveStraightCommand(drivetrain));
     }
 }

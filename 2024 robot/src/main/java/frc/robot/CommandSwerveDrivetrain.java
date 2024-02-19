@@ -35,12 +35,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    private SwerveRequest.RobotCentric m_robotCentric = new SwerveRequest.RobotCentric()
-            .withDeadband(.1 * 6)
-            .withRotationalDeadband(1.5 * Math.PI);
-    private SwerveRequest.FieldCentric m_fieldCentric = new SwerveRequest.FieldCentric()
-            .withDeadband(.1 * 6)
-            .withRotationalDeadband(1.5 * Math.PI);
+    private SwerveRequest.RobotCentric m_robotCentric = new SwerveRequest.RobotCentric();
+    private SwerveRequest.FieldCentric m_fieldCentric = new SwerveRequest.FieldCentric();
     private SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
     private Supplier<Boolean> m_isFieldCentric;
 
@@ -69,20 +65,20 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public void drive(double vx, double vy, double omega, double multiplier) {
+        SmartDashboard.putNumber("omega", omega);
+
         if (m_isFieldCentric.get()) {
             setControl(m_fieldCentric.withVelocityX(vx * multiplier)
                     .withVelocityY(vy * multiplier)
                     .withRotationalRate(omega)
-                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                    .withDeadband(.5));
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
             return;
         }
 
         setControl(m_robotCentric.withVelocityX(vx * multiplier)
                 .withVelocityY(vy * multiplier)
                 .withRotationalRate(omega)
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                .withDeadband(.5));
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
     }
 
     public void driveClosedLoop(double vx, double vy, double omega) {
@@ -146,9 +142,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // helper function to put all speed values together into an array
     private ChassisSpeeds getChassisSpeeds() {
         var states = new SwerveModuleState[4];
+
+        m_stateLock.readLock().lock();
         for (int i = 0; i < Modules.length; i++) {
             states[i] = Modules[i].getCurrentState();
         }
+        m_stateLock.readLock().unlock();
 
         return m_kinematics.toChassisSpeeds(states);
     }
@@ -159,12 +158,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         // var targetStates = m_kinematics.toSwerveModuleStates(discrete);
 
-        applyRequest(() -> {
-            return m_robotCentric
-                    .withVelocityX(discrete.vxMetersPerSecond)
-                    .withVelocityY(discrete.vyMetersPerSecond)
-                    .withRotationalRate(discrete.omegaRadiansPerSecond);
-        });
+        setControl(m_robotCentric
+                .withVelocityX(discrete.vxMetersPerSecond)
+                .withVelocityY(discrete.vyMetersPerSecond)
+                .withRotationalRate(discrete.omegaRadiansPerSecond));
     }
 
     // Returns the config for pathplanner use
@@ -172,8 +169,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         var driveCfg = TunerConstants.driveGains;
         var turnCfg = TunerConstants.steerGains;
 
-        var drivePid = new PIDConstants(driveCfg.kP, driveCfg.kI, driveCfg.kD);
-        var turnPid = new PIDConstants(turnCfg.kP, turnCfg.kI, turnCfg.kD);
+        var drivePid = new PIDConstants(5, 0, 0);
+        var turnPid = new PIDConstants(5, 0, 0);
 
         return new HolonomicPathFollowerConfig(drivePid,
                 turnPid,
