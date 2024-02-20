@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.AutoCommands;
@@ -111,19 +112,19 @@ public class RobotContainer {
 
         SmartDashboard.putData("Choose Auto", m_autoSmartDashboard);
 
-        AutoCommands.setup(drivetrain);
     }
 
     public Command getAutonomousCommand() {
+        var auto = m_autoSmartDashboard.getSelected();
+        if (auto == null) {
+            System.out.println("auto is null!");
+            return new BrakeCommand(drivetrain);
+        }
 
-        // var auto = m_autoSmartDashboard.getSelected();
-        // if (auto == null) {
-        //     System.out.println("auto is null!");
-        // }
-        // return auto == null ? new BrakeCommand(drivetrain) : auto;
+        return auto;
 
         // return new ParallelDeadlineGroup(new WaitCommand(250), new
         // DriveStraightCommand(drivetrain));
-        return new Turn90Command(drivetrain);
+        // return new Turn90Command(drivetrain);
     }
 }

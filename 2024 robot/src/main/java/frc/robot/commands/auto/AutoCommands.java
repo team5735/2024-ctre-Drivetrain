@@ -18,6 +18,8 @@ public final class AutoCommands {
         commands.put("brake", setupBrake(train));
         commands.put("turn90", new Turn90Command(train));
         NamedCommands.registerCommands(commands);
+       
+        System.out.println(commands);
     }
     public static Command setupBrake(CommandSwerveDrivetrain t) {
         Command bcmd = new ParallelDeadlineGroup(new WaitCommand(1),new BrakeCommand(t));

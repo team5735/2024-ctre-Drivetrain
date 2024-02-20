@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.commands.auto.AutoCommands;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -169,12 +170,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     // Returns the config for pathplanner use
     private HolonomicPathFollowerConfig getConfig() {
-        var drivePid = new PIDConstants(5, 0, 0);
-        var turnPid = new PIDConstants(30, 15, 0);
+        var drivePid = new PIDConstants(15, 0, 0);
+        var turnPid = new PIDConstants(1, 0, 0);
 
         return new HolonomicPathFollowerConfig(drivePid,
                 turnPid,
-                4.5, // max speed
+                7.27, // TODO: this number is Cookiezi. Please give a non-arbitrary value
                 Math.sqrt(9.75 * 9.75 + 12.5 * 12.5), // radius (wtf)
                 new ReplanningConfig());
     }
