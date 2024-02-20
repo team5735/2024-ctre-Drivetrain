@@ -16,10 +16,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.auto.AutoCommands;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.drivetrain.DriveStraightCommand;
@@ -53,6 +54,10 @@ public class RobotContainer {
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final Telemetry logger = new Telemetry(.1);
 
+    private double turboMultiplier = 10;
+    private double normalMultiplier = 2;
+    private double slowMultiplier = 1;
+
     private static final double deadband = 0.1;
 
     private static double deadband(double input) {
@@ -66,11 +71,12 @@ public class RobotContainer {
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 new DriveCommand(drivetrain,
                         () -> deadband(joystick.getLeftX()),
-                        () -> deadband(joystick.getLeftY()),
+                        () -> joystick.povUp().getAsBoolean() ? -1.0 : deadband(joystick.getLeftY()),
                         () -> {
                             return deadband(joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis());
                         }, () -> {
-                            return joystick.leftStick().getAsBoolean() ? 1.0 : (joystick.x().getAsBoolean() ? 10 : 2);
+                            return joystick.leftStick().getAsBoolean() ? slowMultiplier
+                                    : (joystick.x().getAsBoolean() ? turboMultiplier : normalMultiplier);
                         }));
 
         joystick.a().whileTrue(new BrakeCommand(drivetrain));
@@ -88,22 +94,34 @@ public class RobotContainer {
             drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
         }
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        SmartDashboard.putNumber("turboMultiplier", turboMultiplier);
+        SmartDashboard.putNumber("normalMultiplier", normalMultiplier);
+        SmartDashboard.putNumber("slowMultiplier", slowMultiplier);
+
+        joystick.y().onTrue(new InstantCommand(() -> {
+            turboMultiplier = SmartDashboard.getNumber("turboMultiplier", turboMultiplier);
+            normalMultiplier = SmartDashboard.getNumber("normalMultiplier", normalMultiplier);
+            slowMultiplier = SmartDashboard.getNumber("slowMultiplier", slowMultiplier);
+        }));
     }
 
     public RobotContainer() {
         configureBindings();
 
         SmartDashboard.putData("Choose Auto", m_autoSmartDashboard);
+
+        AutoCommands.setup(drivetrain);
     }
 
     public Command getAutonomousCommand() {
-        /*
-        var auto = m_autoSmartDashboard.getSelected();
-        if (auto == null) {
-            System.out.println("auto is null!");
-        }
-        return auto == null ? new BrakeCommand(drivetrain) : auto;
- */
+
+        // var auto = m_autoSmartDashboard.getSelected();
+        // if (auto == null) {
+        //     System.out.println("auto is null!");
+        // }
+        // return auto == null ? new BrakeCommand(drivetrain) : auto;
+
         // return new ParallelDeadlineGroup(new WaitCommand(250), new
         // DriveStraightCommand(drivetrain));
         return new Turn90Command(drivetrain);

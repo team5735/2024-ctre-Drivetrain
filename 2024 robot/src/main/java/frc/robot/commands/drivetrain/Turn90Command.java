@@ -11,7 +11,7 @@ public class Turn90Command extends Command {
     private PIDController m_controller = new PIDController(2, .2, .15);
     private double m_startPos;
     private final Supplier<Double> getCurrentAngle = () -> m_drivetrain.getState().Pose.getRotation().getRadians();
-    private final double m_distance = Math.PI;
+    private final double m_distance = Math.PI / 2;
 
     public Turn90Command(CommandSwerveDrivetrain drivetrain) {
         m_drivetrain = drivetrain;
