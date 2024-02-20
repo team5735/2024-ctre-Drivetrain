@@ -23,11 +23,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.drivetrain.DriveStraightCommand;
+import frc.robot.commands.drivetrain.Turn90Command;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
     // private double MaxSpeed = .1; // 6 meters per second desired top speed
-    // private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+    // private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per
+    // second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
@@ -36,18 +38,22 @@ public class RobotContainer {
     private final SendableChooser<Command> m_autoSmartDashboard = AutoBuilder.buildAutoChooser();
 
     // This is a sin, ignore this
-    private static boolean isFieldCentric = false;
+    private static boolean isFieldCentric = true;
     public static Supplier<Boolean> getFieldCentric = () -> isFieldCentric;
 
-    // private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-    //         .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-    //         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-    //                                                                  // driving in open loop
-    // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    // private final SwerveRequest.FieldCentric drive = new
+    // SwerveRequest.FieldCentric()
+    // .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) //
+    // Add a 10% deadband
+    // .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want
+    // field-centric
+    // // driving in open loop
+    // private final SwerveRequest.SwerveDriveBrake brake = new
+    // SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final Telemetry logger = new Telemetry(.1);
 
-    private static final double deadband = 0.07;
+    private static final double deadband = 0.1;
 
     private static double deadband(double input) {
         if (Math.abs(input) <= deadband) {
@@ -62,8 +68,10 @@ public class RobotContainer {
                         () -> deadband(joystick.getLeftX()),
                         () -> deadband(joystick.getLeftY()),
                         () -> {
-                            return deadband(joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis()) * 5;
-                        }, () -> joystick.leftStick().getAsBoolean()));
+                            return deadband(joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis());
+                        }, () -> {
+                            return joystick.leftStick().getAsBoolean() ? 1.0 : (joystick.x().getAsBoolean() ? 8 : 4);
+                        }));
 
         joystick.a().whileTrue(new BrakeCommand(drivetrain));
         joystick.b().whileTrue(drivetrain
@@ -89,11 +97,15 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        /*
         var auto = m_autoSmartDashboard.getSelected();
         if (auto == null) {
             System.out.println("auto is null!");
         }
         return auto == null ? new BrakeCommand(drivetrain) : auto;
-        // return new ParallelDeadlineGroup(new WaitCommand(250), new DriveStraightCommand(drivetrain));
+ */
+        // return new ParallelDeadlineGroup(new WaitCommand(250), new
+        // DriveStraightCommand(drivetrain));
+        return new Turn90Command(drivetrain);
     }
 }

@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -70,15 +72,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (m_isFieldCentric.get()) {
             setControl(m_fieldCentric.withVelocityX(vx * multiplier)
                     .withVelocityY(vy * multiplier)
-                    .withRotationalRate(omega)
+                    .withRotationalRate(omega * multiplier)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
             return;
         }
 
         setControl(m_robotCentric.withVelocityX(vx * multiplier)
                 .withVelocityY(vy * multiplier)
-                .withRotationalRate(omega)
+                .withRotationalRate(omega * multiplier)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
+    }
+
+    public void drive(double vx, double vy, double omega) {
+        drive(vx, vy, omega, 1);
     }
 
     public void driveClosedLoop(double vx, double vy, double omega) {
@@ -201,5 +207,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
 
         SmartDashboard.putNumber("Pigeon rotation speed", m_pigeon2.getRate());
+        SmartDashboard.putNumber("Pigeon reported pose angle", m_pigeon2.getAngle());
     }
 }
