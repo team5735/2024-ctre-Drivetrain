@@ -70,7 +70,7 @@ public class RobotContainer {
                         () -> {
                             return deadband(joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis());
                         }, () -> {
-                            return joystick.leftStick().getAsBoolean() ? 1.0 : (joystick.x().getAsBoolean() ? 8 : 4);
+                            return joystick.leftStick().getAsBoolean() ? 1.0 : (joystick.x().getAsBoolean() ? 10 : 2);
                         }));
 
         joystick.a().whileTrue(new BrakeCommand(drivetrain));
